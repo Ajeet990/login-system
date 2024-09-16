@@ -23,7 +23,7 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 ## Learn More
 
 In this app i have use tech stacks like
-Nextjs, prisma, Formik, YUP, NextAuth
+Nextjs, API, prisma, Formik, YUP, NextAuth, middleware
 
 ## Deploy on Vercel
 

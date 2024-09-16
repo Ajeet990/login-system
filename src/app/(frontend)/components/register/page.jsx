@@ -9,10 +9,15 @@ import MiniLoader from '../miniLoader/page';
 import { NextResponse } from 'next/server';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import MainLoader from '../mainLoader/page';
 
 const registerForm = () => {
     const router = useRouter()
-    const { data:userData } = useSession()
+    const { data:userData, status } = useSession()
+
+    if (status === 'loading') {
+        return (<div><MainLoader /></div>)
+    }
     const initialValues = {
         name: "",
         email: "",
@@ -36,8 +41,20 @@ const registerForm = () => {
             })
 
             if (registerRst.data.success) {
-                toast.success(registerRst.data.message)
-                router.push('/components/login')
+                const otp = Math.floor(Math.random() * 9000) + 1000;
+                const emailResponse = await axios.post(process.env.NEXT_PUBLIC_API_BASE_URL+'/send-mail', { email, otp });
+                if (emailResponse.data.success) {
+                    const addOTP = await axios.post(process.env.NEXT_PUBLIC_API_BASE_URL+'/addOtp', {
+                        email,
+                        otp
+                    })
+                    if (addOTP.data.success) {
+                        router.push(`/components/verifyOtp/${email}`)
+                    }
+                    toast.success('Email sent successfully');
+                } else {
+                    toast.error('Error sending email');
+                }
             } else {
                 toast.error("Registration failed")
             }
@@ -55,6 +72,11 @@ const registerForm = () => {
 
     const handleLogin = () => {
         router.push('/components/login')
+    }
+
+    const handleVerify = () => {
+        const email = "example@yopmail.com"
+        router.push(`/components/verifyOtp/${email}`)
     }
     return (
         <div className="flex justify-center">
@@ -153,6 +175,13 @@ const registerForm = () => {
                                     onClick={handleLogin}
                                 >
                                     Login
+                                </button>
+                                <button
+                                    type='button'
+                                    className='border bg-green-200 rounded-lg px-4 py-2 ml-2'
+                                    onClick={handleVerify}
+                                >
+                                    VerifyOtp
                                 </button>
                             </div>
 

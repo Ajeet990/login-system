@@ -8,13 +8,6 @@ import bcrypt from "bcryptjs";
 export const POST = async (req) => {
     const bData = await req.json()
     try {
-        // const res = await signIn("credentials", {
-        //     redirect: false,
-        //     email: bData.email,
-        //     password: bData.password,
-        // });
-        // console.log("rrr", res)
-            // Check if user exists
         const user = await prisma.users.findUnique({
             where: { email : bData.email },
         });
@@ -27,6 +20,15 @@ export const POST = async (req) => {
         if (!user) {
             return NextResponse.json(rst)
         }
+        if (user.email_verified == 0) {
+            var rst = {
+                success : false,
+                message : "User's email not verified. Please verify first",
+                data : {}
+            }
+            return NextResponse.json(rst)
+        }
+
         const isPasswordValid = await bcrypt.compare(bData.password, user.password);
 
         if (!isPasswordValid) {

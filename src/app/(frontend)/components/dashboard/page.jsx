@@ -11,9 +11,9 @@ const Dashboard = () => {
     if (status === 'loading') {
         return <div><MainLoader /></div>
     }
-    if (!userData) {
-        router.push('/components/login')
-    }
+    // if (!userData) {
+    //     router.push('/components/login')
+    // }
     const handleLogOut = () => {
         signOut({redirect:false})
         toast.success("Logged out successfully.")

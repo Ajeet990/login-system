@@ -18,9 +18,9 @@ const LoginForm = () => {
     if (status === 'loading') {
         return <div><MainLoader /></div>
     }
-    if (userData) {
-        router.push('/components/dashboard')
-    }
+    // if (userData) {
+    //     router.push('/components/dashboard')
+    // }
     const initialValues = {
         email: "",
         password: ""
